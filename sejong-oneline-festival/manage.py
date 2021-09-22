@@ -1,7 +1,6 @@
 """
 Application Main Manage Module
 """
-import os
 import unittest
 import click
 from config import config, APP_NAME

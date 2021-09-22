@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv(verbose=True)
 
-APP_NAME = "IMFlask"
+APP_NAME = "SOF"
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
 
