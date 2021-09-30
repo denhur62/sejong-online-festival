@@ -2,9 +2,19 @@ from pymongo import MongoClient
 from config import config
 
 # Collections
+from .comment import Comment
+from .esports import Esports
+from .event import Event
+from .event_form import EventForm
+from .exhibition import Exhibition
 from .log import Log
 from .master_config import MasterConfig
-MODELS = [Log, MasterConfig]
+
+MODELS = [
+    Comment, Esports, Event, 
+    EventForm, Exhibition,
+    Log, MasterConfig
+]
 
 
 def get_cursor(uri=config.MONGODB_URI) -> MongoClient:
