@@ -19,6 +19,24 @@ class MasterConfig(Model):
             '__version__': self.VERSION,
         }
 
+    def get_config(self, config_type: str):
+        return self.col.find_one(
+            {'config_type': config_type},
+            {
+                '_id': 0,
+                '__version__': 0,
+                'created_at': 0,
+                'updated_at': 0
+            }
+        )
+
+    def upsert_config(self, document: dict):
+        self.col.update_one(
+            {'config_type': document['config_type']},
+            {'$set': self.schemize(document)},
+            upsert=True
+        )
+
     def get_author(self):
         return self.col.find_one(
             {'config_type': 'author'},

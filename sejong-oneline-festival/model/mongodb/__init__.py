@@ -12,6 +12,11 @@ from .log import Log
 from .master_config import MasterConfig
 from .user import User
 
+# initial_data
+from .initial_data import (
+    FESTIVAL_SCHEDULE, CELEBRITY_LINEUP, LIVE_STREAMING
+)
+
 MODELS = [
     Comment, Esports, Event, 
     EventForm, Exhibition,
@@ -40,20 +45,21 @@ class ModelInitializer:
             self.init_index(cur)
             self.init_author(cur)
             self.init_admins(cur)
+            self.init_main_view(cur)
 
     @staticmethod
-    def init_index(cur):
+    def init_index(cur: MongoClient):
         """Create Indexes each Collection"""
         for model in MODELS:
             model(cur).create_index()
 
     @staticmethod
-    def init_author(cur):
+    def init_author(cur: MongoClient):
         """Insert Author config"""
         MasterConfig(cur).insert_author('IML')
 
     @staticmethod
-    def init_admins(cur):
+    def init_admins(cur: MongoClient):
         """Insert Admin User"""
         user_model = User(cur)
         roles = ['admin', 'esports', 'exhibition', 'event']
@@ -65,4 +71,10 @@ class ModelInitializer:
             user['name'] = "[%s]관리자" % role
             user_model.insert_user(user)
 
+    @staticmethod
+    def init_main_view(cur: MongoClient):
+        master_config = MasterConfig(cur)
+        master_config.upsert_config(FESTIVAL_SCHEDULE)
+        master_config.upsert_config(CELEBRITY_LINEUP)
+        master_config.upsert_config(LIVE_STREAMING)
 
