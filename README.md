@@ -15,28 +15,16 @@
 
 ## Environment variable
 
-어플리케이션을 실행하기 위해서는 아래와 같은 환경 변수 설정이 필요합니다.
-
-dotenv 라이브러리를 위해 config.py와 같은 경로에 .env 파일을 작성하셔도 되고, 직접 환경변수를 입력하셔도 상관없습니다.
-
-- **SOF_MONGODB_NAME**=MongoDB DB Name
-
-  MongoDB 서버에 접속하기 위한 Database Name 입니다.
-
-- **SOF_MONGODB_URI**=MongoDB URI
-  MongoDB 서버에 접속하기 위한 Database URI입니다.
-
-- **SOF_ERROR_LOG_PATH**=Server_Error_log Path
-  에러를 기록할 별도의 로그 경로입니다.
-
-- **FLASK_APP**="manage:application"
-  Flask APP 객체의 위치를 가리키는 값입니다. 
-
-- **FLASK_CONFIG**=Config type # development or production
-  어떤 config 데이터를 주입시킬지 결정하는 값입니다.
-
-- **FLASK_ENV**=# development or production
-  어떠한 환경에서 Flask APP을 실행시킬지 결정하는 값입니다. 
+```
+SOF_MONGODB_NAME="SOF"
+SOF_MONGODB_URI="mongodb://localhost:27017"
+FLASK_APP="manage:application"
+FLASK_CONFIG="development" # develop, production
+FLASK_ENV="development" # develop, production
+SOF_ERROR_LOG_PATH="./server.error.log"
+SOF_PHOTO_UPLOAD_PATH="./app/asset/uploads"
+SOF_SECRET_KEY="top-secret!!"
+```
 
 
 
