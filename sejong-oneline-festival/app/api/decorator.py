@@ -34,7 +34,7 @@ def timer(func):
 def login_required(role: str):
     def real_decorator(func):
         @wraps(func)
-        def wrappper(*args, **kwargs):
+        def wrapper(*args, **kwargs):
             verify_jwt_in_request()
             identity = get_jwt_identity()
             user_model = User(g.db)
@@ -45,5 +45,5 @@ def login_required(role: str):
             g.user_id = identity['user_id']
             g.roles = identity['roles']
             return func(*args, **kwargs)
-        return wrappper
+        return wrapper
     return real_decorator
