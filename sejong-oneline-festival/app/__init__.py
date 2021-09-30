@@ -6,9 +6,11 @@ from flask import Flask
 from flask.json import JSONEncoder
 from bson.objectid import ObjectId
 from app import api
+
 from app.api.template import template as template_bp
 from app.api.error_handler import error_handler as error_bp
-from app.api.sample_api import sample_api as sample_api_bp
+from app.api.api_v1 import api_v1 as api_v1_bp
+from app.api.auth import auth as auth_bp
 
 
 class CustomJSONEncoder(JSONEncoder):
@@ -37,6 +39,7 @@ def create_app(config):
 
     app.register_blueprint(error_bp)
     app.register_blueprint(template_bp)
-    app.register_blueprint(sample_api_bp, url_prefix='/sample/')
+    app.register_blueprint(auth_bp, url_prefix='/api/auth')
+    app.register_blueprint(api_v1_bp, url_prefix='/api')
 
     return app

@@ -9,7 +9,9 @@ class User(Model):
 
     @property
     def index(self) -> list:
-        return []
+        return [
+            IndexModel([('user_id', ASCENDING)])
+        ]
 
     @property
     def schema(self) -> dict:
@@ -22,3 +24,13 @@ class User(Model):
             'created_at': datetime.now(),
             '__version__': self.VERSION
         }
+
+    def get_identity(user_id: str):
+        return self.col.find_one(
+            {'user_id': user_id},
+            {
+                '_id': 0, 
+                'password': 1,
+                'roles': 1,
+            }
+        )

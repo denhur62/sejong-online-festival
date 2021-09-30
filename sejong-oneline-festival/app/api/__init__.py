@@ -63,12 +63,33 @@ def init_app(app):
         pass
 
 
-def response(result=None):
-    if result is None:
-        return {'msg': 'success'}, 200
-    else:
-        return {'msg': 'success', 'result': result}, 200
+def response_200(result=None):
+    """GET에 대한 반환"""
+    return {
+        'msg': 'success', 
+        'result': result
+    }, 200
+
+
+# POST, PUT, DELETE에 대한 반환
+response_201 = ({"msg": "success"}, 201)
+no_content = ({}, 204)
+
+
+def forbidden(description):
+    return {
+        'msg': 'fail',
+        'description': description
+    }, 403
 
 
 def bad_request(description):
-    return {'msg': 'fail', 'description': description}, 400
+    return {
+        'msg': 'fail', 
+        'description': description
+    }, 400
+
+not_found = {
+    'msg': 'fail',
+    'description': "Resource not found."
+}, 404

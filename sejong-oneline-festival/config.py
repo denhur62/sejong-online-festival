@@ -16,6 +16,11 @@ class Config:
     SLOW_API_TIME = 0.5
     API_LOGGING = False
     JSON_AS_ASCII = False
+    JWT_TOKEN_LOCATION = ['headers']
+    JWT_ACCESS_TOKEN_EXPIRES = 60 * 60 * 24 * 2
+    JWT_REFRESH_TOKEN_EXPIRES = 60 * 60 * 24 * 60
+    JWT_SESSION_COOKIE = False
+    PHOTO_UPLOAD_PATH = os.environ[APP_NAME + "_PHOTO_UPLOAD_PATH"]
     MONGODB_URI = os.environ[APP_NAME + "_MONGODB_URI"]
     MONGODB_NAME = os.environ[APP_NAME + "_MONGODB_NAME"]
 

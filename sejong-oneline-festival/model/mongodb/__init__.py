@@ -9,11 +9,12 @@ from .event_form import EventForm
 from .exhibition import Exhibition
 from .log import Log
 from .master_config import MasterConfig
+from .user import User
 
 MODELS = [
     Comment, Esports, Event, 
     EventForm, Exhibition,
-    Log, MasterConfig
+    Log, MasterConfig, User
 ]
 
 
