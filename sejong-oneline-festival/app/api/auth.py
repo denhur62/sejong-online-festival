@@ -7,6 +7,7 @@ from flask_validation_extended import Validator, Json
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token
 from app.api import response_200, bad_request
+from app.api.decorator import login_required
 from controller.sejong_auth import SejongAuth
 from controller.user import make_user_document
 from model.mongodb import User
@@ -27,23 +28,51 @@ def auth_signin_api(
     if not user:
         sejong_auth = SejongAuth()
         auth_resp = sejong_auth.do_sejong(id, pw)
-
         if not auth_resp['result']:
-            return bad_request('user_id is not exists.')
-
+            return bad_request('Sejong auth failed.')
         new_user = make_user_document(
-            user_model.schema, id, 
-            generate_password_hash(pw),
-            auth_resp
+            user_model.schema, id, pw, auth_resp
         )
+        user_model.insert_user(new_user)
+        user['roles'] = new_user['roles']
 
-    
     # Password check
     elif not check_password_hash(user['password'], pw):
-        return bad_request('password is incorrect.')
+        return bad_request('Incorrect password.')
 
     return response_200({
         'access_token': create_access_token(
             identity={'user_id':id, 'roles': user['roles']}
-        )
+        ),
+        'access_roles': user['roles']
     })
+
+
+@auth.route("/admin-test")
+@login_required("admin")
+def auth_admin_test():
+    return response_200("Welcome, admin. " + g.user_id)
+
+
+@auth.route("/esports-test")
+@login_required("esports")
+def auth_esports_test():
+    return response_200("Welcome, esports. " + g.user_id)
+
+
+@auth.route("/exhibition-test")
+@login_required("exhibition")
+def auth_exhibition_test():
+    return response_200("Welcome, exhibition. " + g.user_id)
+
+
+@auth.route("/event-test")
+@login_required("event")
+def auth_event_test():
+    return response_200("Welcome, event. " + g.user_id)
+
+
+@auth.route("/general-test")
+@login_required("general")
+def auth_general_test():
+    return response_200("Welcome, general. " + g.user_id)

@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup as bs
 class SejongAuth:
 
     def __init__(self):
-        self.TIMEOUT_SEC = 3
+        self.TIMEOUT_SEC = 10
 
     def do_sejong(self, id: str, pw: str):
         header = {
@@ -71,6 +71,6 @@ class SejongAuth:
 
 if __name__ == '__main__':
     auth = SejongAuth()
-    id, pw = "16011089", "1234"
+    id, pw = "16011089", "!hkw45799"
     print(auth.do_sejong(id, pw))
     print(auth.portal_sejong(id, pw))

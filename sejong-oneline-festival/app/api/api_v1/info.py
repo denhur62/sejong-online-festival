@@ -3,7 +3,7 @@ Get API
 """
 from flask import g, jsonify
 from flask_validation_extended import Json, Validator
-from app.api import response, bad_request
+from app.api import response_200, response_201, bad_request
 from app.api.api_v1 import api_v1 as api
 from app.api.decorator import timer
 from model.mongodb import MasterConfig, Log
@@ -12,13 +12,13 @@ from model.mongodb import MasterConfig, Log
 @api.route('/log')
 @timer
 def get_log_api():
-    return response(Log(g.db).get_log(0, 10))
+    return response_200(Log(g.db).get_log(0, 10))
 
 
 @api.route('/author')
 @timer
 def get_author_api():
-    return response(MasterConfig(g.db).get_author())
+    return response_200(MasterConfig(g.db).get_author())
 
 
 @api.route('/author', methods=['POST', 'PUT'])
@@ -27,7 +27,7 @@ def change_author_api(
     name=Json(str)
 ):
     MasterConfig(g.db).change_author(name)
-    return response()
+    return response_201()
 
 
 

@@ -5,6 +5,9 @@ import json
 from functools import wraps
 from time import time
 from flask import current_app, g, Response
+from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
+from app.api import forbidden
+from model.mongodb import User
 
 
 def timer(func):
@@ -26,3 +29,21 @@ def timer(func):
                 result['process_time'] = g.process_time
         return result
     return wrapper
+
+
+def login_required(role: str):
+    def real_decorator(func):
+        @wraps(func)
+        def wrappper(*args, **kwargs):
+            verify_jwt_in_request()
+            identity = get_jwt_identity()
+            user_model = User(g.db)
+            if not identity or not user_model.get_identity(identity['user_id']):
+                return {"msg": "Bad access token."}, 401
+            if 'admin' not in identity['roles'] and role not in identity['roles']:
+                return forbidden("Permission denied.")
+            g.user_id = identity['user_id']
+            g.roles = identity['roles']
+            return func(*args, **kwargs)
+        return wrappper
+    return real_decorator

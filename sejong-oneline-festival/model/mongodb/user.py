@@ -25,7 +25,7 @@ class User(Model):
             '__version__': self.VERSION
         }
 
-    def get_identity(user_id: str):
+    def get_identity(self, user_id: str):
         return self.col.find_one(
             {'user_id': user_id},
             {
@@ -34,3 +34,6 @@ class User(Model):
                 'roles': 1,
             }
         )
+
+    def insert_user(self, user: dict):
+        self.col.insert_one(self.schemize(user))

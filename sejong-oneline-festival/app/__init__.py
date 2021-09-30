@@ -3,6 +3,8 @@ Application Factory Module
 """
 from datetime import datetime
 from flask import Flask
+from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 from flask.json import JSONEncoder
 from bson.objectid import ObjectId
 from app import api
@@ -12,6 +14,8 @@ from app.api.error_handler import error_handler as error_bp
 from app.api.api_v1 import api_v1 as api_v1_bp
 from app.api.auth import auth as auth_bp
 
+jwt_manager = JWTManager()
+cors = CORS()
 
 class CustomJSONEncoder(JSONEncoder):
     def default(self, obj):
@@ -36,6 +40,8 @@ def create_app(config):
     app.config.from_object(config)
     config.init_app(app)
     api.init_app(app)
+    jwt_manager.init_app(app)
+    cors.init_app(app)
 
     app.register_blueprint(error_bp)
     app.register_blueprint(template_bp)

@@ -23,6 +23,7 @@ class Config:
     PHOTO_UPLOAD_PATH = os.environ[APP_NAME + "_PHOTO_UPLOAD_PATH"]
     MONGODB_URI = os.environ[APP_NAME + "_MONGODB_URI"]
     MONGODB_NAME = os.environ[APP_NAME + "_MONGODB_NAME"]
+    SECRET_KEY = os.environ[APP_NAME + "_SECRET_KEY"]
 
     @staticmethod
     def init_app(app):
