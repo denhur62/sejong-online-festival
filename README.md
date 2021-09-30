@@ -23,7 +23,9 @@ FLASK_CONFIG="development" # develop, production
 FLASK_ENV="development" # develop, production
 SOF_ERROR_LOG_PATH="./server.error.log"
 SOF_PHOTO_UPLOAD_PATH="./app/asset/uploads"
-SOF_SECRET_KEY="top-secret!!"
+SOF_SECRET_KEY="top-secret"
+SOF_ADMIN_ID="admin"
+SOF_ADMIN_PW="1234"
 ```
 
 

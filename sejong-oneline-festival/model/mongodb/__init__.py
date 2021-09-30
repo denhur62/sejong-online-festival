@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from werkzeug.security import generate_password_hash
 from config import config
 
 # Collections
@@ -38,7 +39,7 @@ class ModelInitializer:
         with self.cursor as cur:
             self.init_index(cur)
             self.init_author(cur)
-            self.init_hello(cur)
+            self.init_admins(cur)
 
     @staticmethod
     def init_index(cur):
@@ -52,6 +53,16 @@ class ModelInitializer:
         MasterConfig(cur).insert_author('IML')
 
     @staticmethod
-    def init_hello(cur):
-        """Customize for you"""
+    def init_admins(cur):
+        """Insert Admin User"""
+        user_model = User(cur)
+        roles = ['admin', 'esports', 'exhibition', 'event']
+        user = user_model.schema
+        for role in roles:
+            user['user_id'] = "%s_%s" % (role, config.ADMIN_ID)
+            user['password'] = generate_password_hash(config.ADMIN_PW)
+            user['roles'] = [role]
+            user['name'] = "[%s]관리자" % role
+            user_model.insert_user(user)
+
 

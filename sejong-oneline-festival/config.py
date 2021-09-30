@@ -24,6 +24,8 @@ class Config:
     MONGODB_URI = os.environ[APP_NAME + "_MONGODB_URI"]
     MONGODB_NAME = os.environ[APP_NAME + "_MONGODB_NAME"]
     SECRET_KEY = os.environ[APP_NAME + "_SECRET_KEY"]
+    ADMIN_ID = os.environ[APP_NAME + "_ADMIN_ID"]
+    ADMIN_PW = os.environ[APP_NAME + "_ADMIN_PW"]
 
     @staticmethod
     def init_app(app):

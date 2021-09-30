@@ -36,4 +36,8 @@ class User(Model):
         )
 
     def insert_user(self, user: dict):
-        self.col.insert_one(self.schemize(user))
+        self.col.update_one(
+            {'user_id': user['user_id']},
+            {'$set': self.schemize(user)},
+            upsert=True
+        )
