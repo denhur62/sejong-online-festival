@@ -7,14 +7,14 @@ from flask_validation_extended import File, Ext, Min, Form, MaxFileCount
 from flask_validation_extended import Query, Route, Json, List, Dict
 from app.api.validation import ObjectIdValid
 from bson.objectid import ObjectId
+from datetime import datetime
 from flask import g
 from app.api import response_200, bad_request
 from app.api.api_v1 import api_v1 as api
 from app.api.decorator import login_required, timer
 from model.mongodb import Esports
 from controller.util import make_filename
-from controller.esports import (make_team_document,
-                                make_match_log_document)
+from controller.esports import (make_team_document)
 
 
 # 이벤트 생성
@@ -47,7 +47,6 @@ def esports_v1_insert_banner(
     filename = make_filename(photo.filename)
 
 
-
 # 이벤트 삭제
 @api.route('v1/esports/<event_id>', methods=['DELETE'])
 @Validator(bad_request)
@@ -57,6 +56,30 @@ def esports_v1_delete_event(
     event_id=Route(str, rules=ObjectIdValid())
 ):
     Esports(g.db).delete_event(ObjectId(event_id), g.user_id)
+    return response_200()
+
+
+# 이벤트 시작 / 종료
+@api.route('v1/esports/<event_id>/status', methods=['PATCH'])
+@Validator(bad_request)
+@login_required("esports")
+@timer
+def esports_v1_update_status(
+    event_id=Route(str, rules=ObjectIdValid()),
+    status=Json(bool),
+    match_teams=Json(List(str))
+):
+    Esports(g.db).update_status(ObjectId(event_id), status)
+    if status:
+        for i in range(0, len(match_teams), 2):
+            document = {
+                'match_round': 0,
+                'match_teams': [match_teams[i], match_teams[i+1]],
+                'winner_team': None,
+                'status': "scheduled",
+                'created_at': datetime.now()
+            }
+            Esports(g.db).insert_match_log(ObjectId(event_id), document)
     return response_200()
 
 
@@ -114,41 +137,50 @@ def esports_v1_get_events(
     )
 
 
-# 매칭 로그 기록하기
-@api.route('v1/esports/<event_id>/match_log', methods=['PUT'])
+# 매칭 승리 수정
+@api.route('v1/esports/<event_id>/match_log', methods=['PATCH'])
 @Validator(bad_request)
+@login_required("esports")
 @timer
-def esports_v1_insert_match_log(
+def esports_v1_update_match_log(
     event_id=Route(str, rules=ObjectIdValid()),
     match_round=Json(int),
-    match_teams=Json(List(str))
+    winner_team=Json(str),
 ):
-    event = Esports(g.db).find_event(ObjectId(event_id))
-    document = make_match_log_document(
-        event['participants'],
-        match_round,
-        match_teams
+    # 현재 매치 로그 수정
+    now_round = Esports(g.db).find_match_log(
+        ObjectId(event_id),
+        match_round
     )
-    Esports(g.db).insert_match_log(ObjectId(event_id), document)
+    for match in now_round:
+        if winner_team in match['match_teams']:
+            match['winner_team'] = winner_team
+            match['status'] = "end"
+            break
+    Esports(g.db).update_match_log(ObjectId(event_id), now_round)
 
-    return response_200()
-
-
-# 매칭 로그 수정하기
-@api.route('v1/esports/<event_id>/match_log', methods=['UPDATE'])
-@Validator(bad_request)
-@timer
-def esports_v1_insert_match_log(
-    event_id=Route(str, rules=ObjectIdValid()),
-    match_round=Json(int),
-    match_teams=Json(List(str))
-):
-    event = Esports(g.db).find_event(ObjectId(event_id))
-    document = make_match_log_document(
-        event['participants'],
-        match_round,
-        match_teams
+    # 다음 라운드 매칭 자동화
+    next_round = Esports(g.db).find_match_log(
+        ObjectId(event_id),
+        match_round + 1
     )
-    Esports(g.db).insert_match_log(ObjectId(event_id), document)
+    next_round_teams = []
+    for team in next_round:
+        next_round_teams += team['match_teams']
+    for i in range(0, len(now_round), 2):
+        if now_round[i]['winner_team'] and\
+           now_round[i+1]['winner_team'] and\
+           now_round[i]['winner_team'] not in next_round_teams and\
+           now_round[i+1]['winner_team'] not in next_round_teams:
+            document = {
+                'match_round': match_round + 1,
+                'match_teams': [
+                    now_round[i]['winner_team'],
+                    now_round[i+1]['winner_team']
+                ],
+                'winner_team': None,
+                'status': "scheduled",
+                'created_at': datetime.now()
+            }
+            Esports(g.db).insert_match_log(ObjectId(event_id), document)
 
-    return response_200()
