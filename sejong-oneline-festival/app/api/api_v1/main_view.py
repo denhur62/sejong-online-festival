@@ -13,6 +13,24 @@ from app.api.decorator import timer
 from controller.util import make_filename
 from model.mongodb import MasterConfig
 
+@api.route('/main/logo-upload')
+@timer
+def main_get_logo_upload(
+    photo=File(
+        rules=[
+            Ext(['.png', '.jpg', '.jpeg', '.gif']),
+            MaxFileCount(2)
+        ]
+    )
+):
+    """로고 업로드"""
+    filename = make_filename(photo.filename)
+    photo.save(os.path.join(current_app.config['PHOTO_UPLOAD_PATH'], filename))
+    documents={"config_type":"main_logo","photo":"/uploads/" + filename}
+    MasterConfig(g.db).upsert_config(documents)
+    return response_201
+
+
 @api.route('/main/festival-schedule')
 @timer
 def main_get_festival_schedule_api_v1():
