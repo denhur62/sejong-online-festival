@@ -26,3 +26,14 @@ class Esports(Model):
             'created_at': datetime.now(),
             '__version__': self.VERSION
         }
+
+    def insert_event(self, name: str, owner_id: str):
+        self.col.insert_one(self.schemize(
+                {'name': name, 'owner_id': owner_id}
+            )
+        )
+
+    def find_all(self):
+        return self.col.find()
+
+    
