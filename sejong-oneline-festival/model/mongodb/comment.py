@@ -33,7 +33,7 @@ class Comment(Model):
 
     def get_comment(self,document:str,_skip: int, _limit: int) ->list :
         return list(self.col.find({'content_id':ObjectId(document)})
-        .sort([('created_at', DESCENDING)])
+        .sort([('_id', DESCENDING)])
         .skip(_skip)
         .limit(_limit)
         )
