@@ -31,7 +31,7 @@ def timer(func):
     return wrapper
 
 
-def login_required(role: str):
+def login_required(role=None):
     def real_decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -40,7 +40,11 @@ def login_required(role: str):
             user_model = User(g.db)
             if not identity or not user_model.get_identity(identity['user_id']):
                 return {"msg": "Bad access token."}, 401
-            if 'admin' not in identity['roles'] and role not in identity['roles']:
+            if (
+                role is not None
+                and 'admin' not in identity['roles']
+                and role not in identity['roles']
+            ):
                 return forbidden("Permission denied.")
             g.user_id = identity['user_id']
             g.roles = identity['roles']

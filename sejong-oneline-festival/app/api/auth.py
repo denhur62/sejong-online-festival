@@ -15,6 +15,13 @@ from model.mongodb import User
 auth  = Blueprint('auth', __name__)
 
 
+@auth.route("/me")
+@login_required()
+@timer
+def auth_get_me_api():
+    return response_200(User(g.db).get_user_info_one(g.user_id))
+
+
 @auth.route('/signup', methods=['POST'])
 @login_required('admin')
 @Validator(bad_request)
@@ -44,6 +51,7 @@ def auth_signup_api(
         ),
         'access_roles': user['roles']
     })
+
 
 @auth.route('/signin', methods=['POST'])
 @Validator(bad_request)
