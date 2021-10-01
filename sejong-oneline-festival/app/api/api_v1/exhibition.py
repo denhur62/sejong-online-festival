@@ -43,7 +43,7 @@ def post_exh_api_v1(
     contents=Json(List(str), optional=True),
 ):
     """전시회 생성하기"""
-    user = User(g.db).get_user_info(g.user_id)
+    user = User(g.db).get_user_info_one(g.user_id)
     document = {
         'name': name,
         'owner_id': user['user_id'],

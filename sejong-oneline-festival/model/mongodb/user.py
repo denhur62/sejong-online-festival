@@ -43,8 +43,19 @@ class User(Model):
                 'name': 1, 
                 'major': 1, 
             })
-            
         )
+
+    def get_user_info_one(self, user_id):
+        return self.col.find_one(
+            {'user_id': user_id},
+            {
+                '_id': 0,
+                'user_id': 1,
+                'name': 1,
+                'major': 1,
+            }
+        )
+
     def insert_user(self, user: dict):
         self.col.update_one(
             {'user_id': user['user_id']},
