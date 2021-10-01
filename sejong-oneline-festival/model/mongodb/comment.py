@@ -1,6 +1,7 @@
 from datetime import datetime
 from pymongo import IndexModel, DESCENDING, ASCENDING
 from .base import Model
+from bson.objectid import ObjectId
 
 
 class Comment(Model):
@@ -29,6 +30,10 @@ class Comment(Model):
         }
     def commit_comment(self,document:dict) -> dict:
         self.col.insert_one(self.schemize(document))
-    def get_comment(self,document) :
-        return list(self.col.find({'content_id':document}))
+    def get_comment(self,document:str,_skip: int, _limit: int) ->list :
+        return list(self.col.find({'content_id':ObjectId(document)})
+        .sort([('created_at', DESCENDING)])
+        .skip(_skip)
+        .limit(_limit)
+        )
     
