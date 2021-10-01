@@ -34,7 +34,7 @@ def esports_v1_create_event(
 
 
 # 이벤트 배너(이미지) 추가
-@api.route('esports/<event_id>/banner', methods=['POST'])
+@api.route('esports/<event_id>/banner_photo', methods=['POST'])
 @login_required("esports")
 @Validator(bad_request)
 @timer
