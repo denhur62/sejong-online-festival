@@ -13,7 +13,6 @@ from app.api.decorator import timer
 from controller.util import make_filename
 from model.mongodb import MasterConfig
 
-
 @api.route('/main/festival-schedule')
 @timer
 def main_get_festival_schedule_api_v1():
