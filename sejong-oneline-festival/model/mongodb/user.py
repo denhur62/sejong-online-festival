@@ -34,7 +34,17 @@ class User(Model):
                 'roles': 1,
             }
         )
-
+    def get_user_info(self,author_id) -> dict:
+        return list(
+            self.col.find(
+                {'user_id':author_id}, {
+                '_id':0,
+                'user_id': 1, 
+                'name': 1, 
+                'major': 1, 
+            })
+            
+        )
     def insert_user(self, user: dict):
         self.col.update_one(
             {'user_id': user['user_id']},

@@ -27,3 +27,8 @@ class Comment(Model):
             'created_at': datetime.now(),
             '__version__': self.VERSION
         }
+    def commit_comment(self,document:dict) -> dict:
+        self.col.insert_one(self.schemize(document))
+    def get_comment(self,document) :
+        return list(self.col.find({'content_id':document}))
+    
