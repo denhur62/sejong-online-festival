@@ -14,7 +14,7 @@ from .user import User
 
 # initial_data
 from .initial_data import (
-    FESTIVAL_SCHEDULE, CELEBRITY_LINEUP, LIVE_STREAMING,COMMENTS
+    FESTIVAL_SCHEDULE, CELEBRITY_LINEUP, LIVE_STREAMING,COMMENTS,MAIN_LOGO
 )
 
 MODELS = [
@@ -78,7 +78,8 @@ class ModelInitializer:
         master_config.upsert_config(FESTIVAL_SCHEDULE)
         master_config.upsert_config(CELEBRITY_LINEUP)
         master_config.upsert_config(LIVE_STREAMING)
-    
+        master_config.upsert_config(MAIN_LOGO)
+        
     @staticmethod
     def init_comment(cur:MongoClient):
         comment=Comment(cur)
