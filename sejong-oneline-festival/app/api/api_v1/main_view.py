@@ -42,8 +42,13 @@ def main_get_celebrity_lineup_api_v1():
     """연예인 라인업 반환 API"""
     data = MasterConfig(g.db).get_config("celebrity_lineup")
     celebrities = data['celebrities'] if data and 'celebrities' in data else []
+    banner_photos = data['banner_photos'] if data and 'banner_photos' in data else []
+    result = []
+    for celeb, banner in zip(celebrities, banner_photos):
+        celeb['banner_photo'] = banner
+        result.append(celeb)
     return response_200({
-        'celebrities': celebrities
+        'celebrities': result
     })
 
 
@@ -77,7 +82,7 @@ def main_put_celebrity_photo_api_v1(
     for photo in photos:
         filename = make_filename(photo.filename)
         photo.save(os.path.join(current_app.config['PHOTO_UPLOAD_PATH'], filename))
-        banner_photos.append(filename)
+        banner_photos.append("/uploads/" + filename)
 
     MasterConfig(g.db).upsert_config({
         'config_type': 'celebrity_lineup',

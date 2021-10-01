@@ -3,7 +3,7 @@ Auth API
 """
 from flask import Blueprint, g
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from flask_validation_extended import Validator, Json
+from flask_validation_extended import Validator, Json, List, In
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token
 from app.api import response_200, bad_request
@@ -14,6 +14,36 @@ from model.mongodb import User
 
 auth  = Blueprint('auth', __name__)
 
+
+@auth.route('/signup', methods=['POST'])
+@login_required('admin')
+@Validator(bad_request)
+@timer
+def auth_signup_api(
+    id=Json(str),
+    pw=Json(str),
+    name=Json(str),
+    roles=Json(List(str))
+):
+    user_model = User(g.db)
+    if user_model.get_identity(id):
+        return bad_request("User already exists.")
+
+    user = {
+        'user_id': id,
+        'password': generate_password_hash(pw),
+        'name': name,
+        'roles': roles,
+    }
+
+    user_model.insert_user(user)
+
+    return response_200({
+        'access_token': create_access_token(
+            identity={'user_id': id, 'roles': user['roles']}
+        ),
+        'access_roles': user['roles']
+    })
 
 @auth.route('/signin', methods=['POST'])
 @Validator(bad_request)
