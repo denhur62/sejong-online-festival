@@ -14,7 +14,7 @@ from .user import User
 
 # initial_data
 from .initial_data import (
-    FESTIVAL_SCHEDULE, CELEBRITY_LINEUP, LIVE_STREAMING
+    FESTIVAL_SCHEDULE, CELEBRITY_LINEUP, LIVE_STREAMING,COMMENTS
 )
 
 MODELS = [
@@ -46,6 +46,7 @@ class ModelInitializer:
             self.init_author(cur)
             self.init_admins(cur)
             self.init_main_view(cur)
+            self.init_comment(cur)
 
     @staticmethod
     def init_index(cur: MongoClient):
@@ -77,4 +78,10 @@ class ModelInitializer:
         master_config.upsert_config(FESTIVAL_SCHEDULE)
         master_config.upsert_config(CELEBRITY_LINEUP)
         master_config.upsert_config(LIVE_STREAMING)
+    
+    @staticmethod
+    def init_comment(cur:MongoClient):
+        comment=Comment(cur)
+        comment.upsert_config(COMMENTS)
+
 

@@ -30,10 +30,17 @@ class Comment(Model):
         }
     def commit_comment(self,document:dict) -> dict:
         self.col.insert_one(self.schemize(document))
+
     def get_comment(self,document:str,_skip: int, _limit: int) ->list :
         return list(self.col.find({'content_id':ObjectId(document)})
         .sort([('created_at', DESCENDING)])
         .skip(_skip)
         .limit(_limit)
+        )
+
+    def upsert_config(self, document: list):
+        self.col.drop()
+        self.col.insert_many(
+            document
         )
     
