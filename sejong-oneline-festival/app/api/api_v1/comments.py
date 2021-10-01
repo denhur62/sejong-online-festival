@@ -18,9 +18,10 @@ from bson.objectid import ObjectId
 @Validator(bad_request)
 @login_required("general")
 def comment_commit_api_v1(
-    comments=Json(str),
+    comments=Json([str,int]),
     content_id=Route(str,rules=ObjectIdValid())
 ):
+    comments = str(comments)
     author_id=g.user_id
     documents = {'user_id':'author_id', 'name':'author_name', 
     'major':'author_major'}
