@@ -94,7 +94,7 @@ def put_exh_banner_api_v1(
         return forbidden("You are not owner.")
     
     filename = make_filename(banner_photo[0].filename)
-    banner_photo.save(
+    banner_photo[0].save(
         os.path.join(
             current_app.config['PHOTO_UPLOAD_PATH'],
             filename
