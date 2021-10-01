@@ -30,9 +30,15 @@ class Esports(Model):
         }
 
     def insert_event(self, name: str, owner_id: str):
-        self.col.insert_one(self.schemize(
+        return self.col.insert_one(self.schemize(
                 {'name': name, 'owner_id': owner_id}
             )
+        )
+
+    def update_event(self, event_id: ObjectId, field_obj: dict):
+        self.col.update_one(
+            {'_id': event_id},
+            {field_obj}
         )
 
     def delete_event(self, event_id: ObjectId, owner_id: str):
@@ -55,9 +61,9 @@ class Esports(Model):
             {'$push': {'participants': team}}
         )
 
-    def delete_team(self, event_id: ObjectId, team_name):
+    def delete_team(self, event_id: ObjectId, owner_id: str, team_name: str):
         self.col.update_one(
-            {'_id': event_id},
+            {'_id': event_id, 'owner_id': owner_id},
             {'$pull': {
                 'participants': {'team_name': team_name}
             }}
@@ -69,11 +75,6 @@ class Esports(Model):
     def find_event(self, event_id: ObjectId):
         return self.col.find_one(
             {'_id': event_id}
-        )
-    
-    def find_match_log(self, event_id: ObjectId, match_round: int):
-        return self.col.find_one(
-            {'_id': event_id, 'match_logs.match_round': match_round}
         )
 
     def insert_match_log(self, event_id: ObjectId, log: dict):
