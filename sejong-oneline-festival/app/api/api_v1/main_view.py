@@ -9,26 +9,28 @@ from flask_validation_extended import List, Dict
 from flask_validation_extended import Ext, MaxFileCount
 from app.api import response_200, response_201, bad_request
 from app.api.api_v1 import api_v1 as api
-from app.api.decorator import timer
+from app.api.decorator import timer,login_required
 from controller.util import make_filename
 from model.mongodb import MasterConfig
 
 @api.route('/main/logo-upload')
 @timer
+@Validator(bad_request)
+@login_required("admin")
 def main_get_logo_upload(
     photo=File(
         rules=[
             Ext(['.png', '.jpg', '.jpeg', '.gif']),
-            MaxFileCount(2)
+            MaxFileCount(1)
         ]
     )
 ):
     """로고 업로드"""
-    filename = make_filename(photo.filename)
-    photo.save(os.path.join(current_app.config['PHOTO_UPLOAD_PATH'], filename))
+    filename = make_filename(photo[0].filename)
+    photo[0].save(os.path.join(current_app.config['PHOTO_UPLOAD_PATH'], filename))
     documents={"config_type":"main_logo","photo":"/uploads/" + filename}
     MasterConfig(g.db).upsert_config(documents)
-    return response_201
+    return response_200(documents)
 
 
 @api.route('/main/festival-schedule')
