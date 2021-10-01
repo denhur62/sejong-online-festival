@@ -43,10 +43,8 @@ def main_get_celebrity_lineup_api_v1():
     """연예인 라인업 반환 API"""
     data = MasterConfig(g.db).get_config("celebrity_lineup")
     celebrities = data['celebrities'] if data and 'celebrities' in data else []
-    banner_photos = data['banner_photos'] if data and 'banner_photos' in data else []
     return response_200({
-        'celebrities': celebrities,
-        'banner_photos': banner_photos,
+        'celebrities': celebrities
     })
 
 
