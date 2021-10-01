@@ -1,6 +1,7 @@
 """
 Application Factory Module
 """
+import os
 from datetime import datetime
 from flask import Flask
 from flask_jwt_extended import JWTManager
@@ -47,5 +48,7 @@ def create_app(config):
     app.register_blueprint(template_bp)
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(api_v1_bp, url_prefix='/api')
+
+    os.makedirs(config.PHOTO_UPLOAD_PATH, exist_ok=True)
 
     return app

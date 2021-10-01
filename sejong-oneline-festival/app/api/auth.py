@@ -7,7 +7,7 @@ from flask_validation_extended import Validator, Json
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token
 from app.api import response_200, bad_request
-from app.api.decorator import login_required
+from app.api.decorator import login_required, timer
 from controller.sejong_auth import SejongAuth
 from controller.user import make_user_document
 from model.mongodb import User
@@ -17,6 +17,7 @@ auth  = Blueprint('auth', __name__)
 
 @auth.route('/signin', methods=['POST'])
 @Validator(bad_request)
+@timer
 def auth_signin_api(
     id=Json(str),
     pw=Json(str)

@@ -2,6 +2,9 @@ from string import ascii_letters
 from random import choice
 from faker import Faker
 from faker.providers import internet
+from bson.objectid import ObjectId
+from werkzeug.utils import secure_filename
+
 
 def get_fake():
     fake = Faker('ko_KR')
@@ -28,6 +31,10 @@ def pascal2snake(string: str):
 
 def get_random_id():
     """Get Random String for Identification"""
-    string_pool = ascii_letters + "0123456789"
-    rand_string = [choice(string_pool) for _ in range(15)]
-    return "".join(rand_string)
+    return str(ObjectId())
+
+
+def make_filename(origin_filename: str):
+    origin_filename = secure_filename(origin_filename)
+    ext = origin_filename.rsplit('.', 1)[1].lower()
+    return "%s.%s" % (get_random_id(), ext)

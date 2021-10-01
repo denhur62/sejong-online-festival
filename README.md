@@ -14,6 +14,7 @@
 
 
 ## Environment variable
+SOF_PHOTO_UPLOAD_PATH는 static URL을 사용하기 위해, app/asset/ 내에 지정하는 걸 추천.
 
 ```
 SOF_MONGODB_NAME="SOF"
