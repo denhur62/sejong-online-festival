@@ -38,3 +38,12 @@ def make_filename(origin_filename: str):
     origin_filename = secure_filename(origin_filename)
     ext = origin_filename.rsplit('.', 1)[1].lower()
     return "%s.%s" % (get_random_id(), ext)
+
+
+def remove_none_value(document: dict):
+    """입력받은 dict의 None value 데이터를 제거한채 반환"""
+    keys = list(document.keys())
+    for key in keys:
+        if document[key] is None:
+            del document[key]
+    return document

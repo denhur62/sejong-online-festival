@@ -1,7 +1,7 @@
 from datetime import datetime
 from pymongo import IndexModel, DESCENDING, ASCENDING
 from .base import Model
-
+from bson.objectid import ObjectId
 
 class Exhibition(Model):
 
@@ -26,3 +26,39 @@ class Exhibition(Model):
             'created_at': datetime.now(),
             '__version__': self.VERSION
         }
+
+    def find_all(self):
+        return list(
+            self.col.find({}, {
+                '_id': 1,
+                'name': 1,
+                'banner_photo': 1,
+                'owner_id': 1,
+                'owner_name': 1,
+                'type': 1
+            })
+        )
+
+    def find_one(self, oid: ObjectId):
+        return self.col.find_one(
+            {'_id': oid},
+            {
+                '_id': 1,
+                'name': 1,
+                'banner_photo': 1,
+                'owner_id': 1,
+                'owner_name': 1,
+                'type': 1,
+                'post': 1,
+                'contents': 1,
+            }
+        )
+
+    def insert_one(self, document: dict):
+        return self.col.insert_one(self.schemize(document))
+
+    def update_one(self, oid: ObjectId, document: dict):
+        self.col.update_one(
+            {'_id': oid},
+            {'$set': document}
+        )
